@@ -74,10 +74,10 @@ input[type=submit]:hover {
 <p>Kami berharap dengan ini dapat membantu peningkatan kualitas dalam segi apapun, kami menerima kritik, saran, dan masukan, tolong jangan sungkan-sungkan untuk memberikan kritik, saran, dan masukan. Terimakasih</p>
 
 <div class="container">
-  <form action="">
+  <form action="" onsubmit="kirimPesan(event)" method="POST"> 
     <div class="row">
       <div class="col-100">
-        <textarea id="subject" name="subject" placeholder="Ketik Kritik, Saran, dan Masukan disini .." style="height:200px"></textarea>
+        <textarea id="messages" name="messages" placeholder="Ketik Kritik, Saran, dan Masukan disini .." style="height:200px"></textarea>
       </div>
     </div>
     <div class="row">
@@ -85,6 +85,47 @@ input[type=submit]:hover {
     </div>
   </form>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<script>
+  async function kirimPesan(event) {
+    if (event) {
+      event.preventDefault(); // Cegah form submit default
+    }
+
+    try {
+      const textAreaElement = document.getElementById('messages');
+      const pesan = textAreaElement.value;
+      const decodedPesan = decodeURIComponent(pesan);
+
+      const botToken = "6958413519:AAE1qLj1kZtpuqmeT4dK8vzq4mHJ_SXlx3U";
+      const chatId = '784188021';
+
+      const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: decodedPesan
+        })
+      });
+
+      if (response.ok) {
+        console.log('Pesan berhasil dikirim!');
+        alert('Pesan berhasil dikirim ke Telegram!'); // Tambahkan alert
+        textAreaElement.value = ''; // Kosongkan textarea setelah dikirim
+      } else {
+        console.error('Gagal mengirim pesan:', response.statusText);
+        alert('Gagal mengirim pesan ke Telegram!'); // Tambahkan alert
+      }
+    } catch (error) {
+      console.error('Error saat mengirim pesan:', error.message);
+      alert('Terjadi kesalahan saat mengirim pesan!'); // Tambahkan alert
+    }
+  }
+</script>
 
 </body>
 </html>
